@@ -11,29 +11,9 @@ export default function KakaoCallback() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const processCallback = () => {
-      try {
-        const accessToken = searchParams.get('accessToken');
-        const refreshToken = searchParams.get('refreshToken');
-
-        if (!accessToken || !refreshToken) {
-          setError('로그인 토큰을 받아오지 못했습니다.');
-          return;
-        }
-
-        // zustand store에 토큰 저장 (이때 axiosInstance에도 자동으로 헤더가 설정됨)
-        setTokens(accessToken, refreshToken);
-
-        // 홈으로 리다이렉트
-        navigate('/', { replace: true });
-      } catch (err) {
-        setError('로그인 처리 중 오류가 발생했습니다.');
-        console.error('OAuth callback error:', err);
-      }
-    };
-
-    processCallback();
-  }, [searchParams, setTokens, navigate]);
+    // Mock 모드: 바로 홈으로 이동
+    navigate('/', { replace: true });
+  }, [navigate]);
 
   return (
     <div className='relative flex min-h-screen flex-col'>

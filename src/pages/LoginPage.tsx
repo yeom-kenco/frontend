@@ -1,3 +1,5 @@
+import { useNavigate } from 'react-router-dom';
+
 import kakaoLogo from '@/assets/images/KakaoLogo.svg';
 import smartphone from '@/assets/images/Smartphone.svg';
 import socialLoginMsgPng from '@/assets/images/social_login_message.png';
@@ -5,15 +7,16 @@ import socialLoginMsgWebp from '@/assets/images/social_login_message.webp';
 import BackHeader from '@/components/BackHeader';
 
 export default function LoginPage() {
+  const navigate = useNavigate();
+
   const handleKakaoLogin = () => {
-    // 카카오 로그인 URL로 리다이렉트
-    const kakaoLoginUrl = import.meta.env.VITE_KAKAO_URI || 'https://api-donghang.klr.kr/oauth2/authorization/kakao';
-    window.location.href = kakaoLoginUrl;
+    // Mock 모드: 바로 홈으로 이동
+    navigate('/', { replace: true });
   };
 
   const handleGeneralLogin = () => {
-    // TODO: 일반 로그인 처리 (현재는 임시)
-    console.log('일반 로그인 버튼 클릭');
+    // Mock 모드: 바로 홈으로 이동
+    navigate('/', { replace: true });
   };
 
   return (
