@@ -4,17 +4,10 @@ import { ko } from 'date-fns/locale';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-// 토스페이먼츠 타입 정의
-declare global {
-  interface Window {
-    TossPayments: any;
-  }
-}
-
 import { checkActivePass, getActivePass } from '@/apis/passes';
 import { createReservation } from '@/apis/reservations';
 import { getRouteDetail } from '@/apis/routes';
-import type { PassResponse, PaymentMethod, RouteResponse } from '@/apis/types';
+import type { PassResponse, RouteResponse } from '@/apis/types';
 import BackHeader from '@/components/BackHeader';
 import NavButton from '@/components/NavButton';
 import PaymentMethodSection from '@/components/PaymentMethodSection';
@@ -40,7 +33,6 @@ export default function RouteConfirmPage() {
   const [routeDetail, setRouteDetail] = useState<RouteResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [tossPayments, setTossPayments] = useState<any>(null);
   const [termsAgreed, setTermsAgreed] = useState(false);
 
   // Redirect if no route selected and fetch route detail
@@ -75,22 +67,6 @@ export default function RouteConfirmPage() {
 
     fetchRouteDetail();
   }, [selectedRoute, selectedDate, navigate]);
-
-  // 토스페이먼츠 SDK 초기화
-  useEffect(() => {
-    const clientKey = import.meta.env.VITE_TOSS_CLIENT_KEY;
-    if (!clientKey) {
-      console.error('토스페이먼츠 클라이언트 키가 설정되지 않았습니다.');
-      return;
-    }
-
-    if (window.TossPayments) {
-      const tossPayments = window.TossPayments(clientKey);
-      setTossPayments(tossPayments);
-    } else {
-      console.error('토스페이먼츠 SDK가 로드되지 않았습니다.');
-    }
-  }, []);
 
   // Check pass status on component mount
   useEffect(() => {
@@ -142,56 +118,6 @@ export default function RouteConfirmPage() {
   // Format selected date for display
   const formattedDate = format(selectedDate, 'yyyy.MM.dd(E)', { locale: ko });
 
-  // 고유한 주문 ID 생성
-  const generateOrderId = () => {
-    return `ORDER_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
-  };
-
-  // 토스페이먼츠 결제 요청
-  const requestTossPayment = async (createdReservation: any) => {
-    if (!tossPayments) {
-      setError('결제 시스템이 준비되지 않았습니다.');
-      return;
-    }
-
-    const orderId = generateOrderId();
-    const customerName = '셔틀 예약자'; // 실제로는 사용자 정보에서 가져와야 함
-
-    try {
-      // 현재 URL을 기준으로 리다이렉트 URL 생성
-      const currentOrigin = window.location.origin;
-      const successUrl = `${currentOrigin}/reservation-result?reservationId=${createdReservation.id}`;
-      const failUrl = `${currentOrigin}/reservation-result?reservationId=${createdReservation.id}`;
-
-      // 예약 정보를 sessionStorage에 저장 (결제 완료 후 사용)
-      const paymentData = {
-        reservationId: createdReservation.id,
-        routeId: selectedRoute?.id || 0,
-        reservationDate: format(selectedDate!, 'yyyy-MM-dd'),
-        paymentMethod: paymentService.toUpperCase() as PaymentMethod,
-        amount: paymentAmount,
-      };
-      sessionStorage.setItem('pendingReservation', JSON.stringify(paymentData));
-
-      // 토스페이먼츠 결제창 호출
-      await tossPayments.requestPayment('카드', {
-        amount: paymentAmount,
-        orderId: orderId,
-        orderName: `${selectedRoute?.pickupLocation || ''} → ${selectedRoute?.hospitalName || ''} 셔틀`,
-        customerName: customerName,
-        successUrl: successUrl,
-        failUrl: failUrl,
-      });
-    } catch (error: any) {
-      console.error('토스페이먼츠 결제 요청 실패:', error);
-      if (error.code === 'USER_CANCEL') {
-        setError('결제가 취소되었습니다.');
-      } else {
-        setError(error.message || '결제 요청 중 오류가 발생했습니다.');
-      }
-    }
-  };
-
   // Handle payment/reservation creation
   const handlePayment = async () => {
     if (!selectedRoute || !selectedDate) return;
@@ -217,20 +143,8 @@ export default function RouteConfirmPage() {
         amount: paymentAmount,
       });
 
-      if (paymentAmount === 0) {
-        // 무료 예약 (패스 사용) - 바로 결과 페이지로
-        navigate(`/reservation-result?reservationId=${createdReservation.id}`, { replace: true });
-      } else {
-        // 결제가 필요한 경우 토스페이먼츠 결제 진행
-        if (paymentService === 'toss') {
-          await requestTossPayment(createdReservation);
-        } else if (paymentService === 'kakao') {
-          // 카카오페이 결제는 나중에 구현
-          setError('카카오페이 결제는 준비 중입니다.');
-        } else {
-          setError('지원하지 않는 결제 방식입니다.');
-        }
-      }
+      // Mock 모드: 바로 결과 페이지로 이동
+      navigate(`/reservation-result?reservationId=${createdReservation.id}`, { replace: true });
     } catch (err) {
       console.error('Payment/reservation failed:', err);
       setError(err instanceof Error ? err.message : '예약 처리 중 오류가 발생했습니다.');

@@ -31,46 +31,50 @@ export default function PaymentSuccessPage() {
         const orderId = searchParams.get('orderId');
         const amount = searchParams.get('amount');
 
-        if (!paymentKey || !orderId || !amount) {
-          throw new Error('결제 정보가 올바르지 않습니다.');
-        }
-
         // sessionStorage에서 예약 또는 정기권 정보 가져오기
         const pendingReservationStr = sessionStorage.getItem('pendingReservation');
         const pendingPassStr = sessionStorage.getItem('pendingPass');
 
-        if (!pendingReservationStr && !pendingPassStr) {
-          throw new Error('결제 정보를 찾을 수 없습니다.');
-        }
+        if (paymentKey && orderId && amount) {
+          // 실제 결제 플로우 (Toss/Kakao에서 리다이렉트)
+          if (!pendingReservationStr && !pendingPassStr) {
+            throw new Error('결제 정보를 찾을 수 없습니다.');
+          }
 
-        const isPassPayment = !!pendingPassStr;
-        setIsPassPayment(isPassPayment);
-        const paymentData = isPassPayment ? JSON.parse(pendingPassStr!) : JSON.parse(pendingReservationStr!);
+          const isPass = !!pendingPassStr;
+          setIsPassPayment(isPass);
 
-        // 백엔드에서 결제 승인
-        const paymentConfirmData: PaymentConfirmRequest = {
-          paymentKey,
-          orderId,
-          amount: parseInt(amount),
-        };
+          const paymentConfirmData: PaymentConfirmRequest = {
+            paymentKey,
+            orderId,
+            amount: parseInt(amount),
+          };
 
-        console.log('결제 승인 요청:', paymentConfirmData);
-        const paymentResult = await confirmPayment(paymentConfirmData);
-        console.log('결제 승인 성공:', paymentResult);
+          await confirmPayment(paymentConfirmData);
 
-        if (isPassPayment) {
-          // 정기권 결제의 경우 - 별도 처리 없이 성공 표시
-          console.log('정기권 결제 완료:', paymentData);
-          sessionStorage.removeItem('pendingPass');
+          if (isPass) {
+            sessionStorage.removeItem('pendingPass');
+          } else {
+            const reservationData = JSON.parse(pendingReservationStr!) as ReservationData;
+            await createReservation({
+              routeId: reservationData.routeId,
+              reservationDate: reservationData.reservationDate,
+            });
+            sessionStorage.removeItem('pendingReservation');
+          }
         } else {
-          // 예약 결제의 경우 - 예약 생성
-          const reservationData = paymentData as ReservationData;
-          const reservation = await createReservation({
-            routeId: reservationData.routeId,
-            reservationDate: reservationData.reservationDate,
-          });
-          console.log('예약 생성 성공:', reservation);
-          sessionStorage.removeItem('pendingReservation');
+          // Mock 모드: URL 파라미터 없이 직접 진입
+          if (pendingPassStr) {
+            setIsPassPayment(true);
+            sessionStorage.removeItem('pendingPass');
+          } else if (pendingReservationStr) {
+            setIsPassPayment(false);
+            sessionStorage.removeItem('pendingReservation');
+          }
+          // 파라미터도 sessionStorage도 없으면 정기권 결제 성공으로 처리
+          if (!pendingReservationStr && !pendingPassStr) {
+            setIsPassPayment(true);
+          }
         }
 
         setSuccess(true);
