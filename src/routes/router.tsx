@@ -17,85 +17,88 @@ import RoutePage from '@/pages/RoutePage';
 import SeasonTicketCheckoutSuccessPage from '@/pages/SeasonTicketCheckoutSuccessPage';
 import SeasonTicketPage from '@/pages/SeasonTicketPage';
 
-export const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <RootFrame />,
-    children: [
-      { index: true, element: <HomePage /> },
-      { path: '/login', element: <LoginPage /> },
-      // 인증이 필요한 라우트들
-      {
-        path: '/reservation-result',
-        element: (
-          <AuthGuard>
-            <ReservationResultPage />
-          </AuthGuard>
-        ),
-      },
-      { path: '/payment/success', element: <PaymentSuccessPage /> },
-      { path: '/payment/fail', element: <PaymentFailPage /> },
-      { path: '*', element: <NotFoundPage /> },
-      { path: '/oauth/callback', element: <KakaoCallbackPage /> },
-      { path: '/department', element: <DepartmentSelectPage /> },
-      { path: '*', element: <NotFoundPage /> },
-      // 인증이 필요한 라우트들
-      {
-        path: '/route',
-        element: (
-          <AuthGuard>
-            <RoutePage />
-          </AuthGuard>
-        ),
-      },
-      {
-        path: '/route/confirm',
-        element: (
-          <AuthGuard>
-            <RouteConfirmPage />
-          </AuthGuard>
-        ),
-      },
-      {
-        path: '/season-ticket',
-        element: (
-          <AuthGuard>
-            <SeasonTicketPage />
-          </AuthGuard>
-        ),
-      },
-      {
-        path: '/reservation-result',
-        element: (
-          <AuthGuard>
-            <ReservationResultPage />
-          </AuthGuard>
-        ),
-      },
-      {
-        path: '/reservations',
-        element: (
-          <AuthGuard>
-            <ReservationsPage />
-          </AuthGuard>
-        ),
-      },
-      {
-        path: '/success-payment',
-        element: (
-          <AuthGuard>
-            <SeasonTicketCheckoutSuccessPage />
-          </AuthGuard>
-        ),
-      },
-      {
-        path: '/reservations/:reservationId/ticket',
-        element: (
-          <AuthGuard>
-            <ReservationTicketPage />
-          </AuthGuard>
-        ),
-      },
-    ],
-  },
-]);
+export const router = createBrowserRouter(
+  [
+    {
+      path: '/',
+      element: <RootFrame />,
+      children: [
+        { index: true, element: <HomePage /> },
+        { path: '/login', element: <LoginPage /> },
+        // 인증이 필요한 라우트들
+        {
+          path: '/reservation-result',
+          element: (
+            <AuthGuard>
+              <ReservationResultPage />
+            </AuthGuard>
+          ),
+        },
+        { path: '/payment/success', element: <PaymentSuccessPage /> },
+        { path: '/payment/fail', element: <PaymentFailPage /> },
+        { path: '*', element: <NotFoundPage /> },
+        { path: '/oauth/callback', element: <KakaoCallbackPage /> },
+        { path: '/department', element: <DepartmentSelectPage /> },
+        { path: '*', element: <NotFoundPage /> },
+        // 인증이 필요한 라우트들
+        {
+          path: '/route',
+          element: (
+            <AuthGuard>
+              <RoutePage />
+            </AuthGuard>
+          ),
+        },
+        {
+          path: '/route/confirm',
+          element: (
+            <AuthGuard>
+              <RouteConfirmPage />
+            </AuthGuard>
+          ),
+        },
+        {
+          path: '/season-ticket',
+          element: (
+            <AuthGuard>
+              <SeasonTicketPage />
+            </AuthGuard>
+          ),
+        },
+        {
+          path: '/reservation-result',
+          element: (
+            <AuthGuard>
+              <ReservationResultPage />
+            </AuthGuard>
+          ),
+        },
+        {
+          path: '/reservations',
+          element: (
+            <AuthGuard>
+              <ReservationsPage />
+            </AuthGuard>
+          ),
+        },
+        {
+          path: '/success-payment',
+          element: (
+            <AuthGuard>
+              <SeasonTicketCheckoutSuccessPage />
+            </AuthGuard>
+          ),
+        },
+        {
+          path: '/reservations/:reservationId/ticket',
+          element: (
+            <AuthGuard>
+              <ReservationTicketPage />
+            </AuthGuard>
+          ),
+        },
+      ],
+    },
+  ],
+  { basename: '/frontend' },
+);

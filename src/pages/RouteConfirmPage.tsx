@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { checkActivePass, getActivePass } from '@/apis/passes';
 import { createReservation } from '@/apis/reservations';
 import { getRouteDetail } from '@/apis/routes';
-import type { PassResponse, RouteResponse } from '@/apis/types';
+import type { PassResponse, PaymentMethod, RouteResponse } from '@/apis/types';
 import BackHeader from '@/components/BackHeader';
 import NavButton from '@/components/NavButton';
 import PaymentMethodSection from '@/components/PaymentMethodSection';

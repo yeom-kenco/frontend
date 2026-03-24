@@ -10,15 +10,6 @@ import NavButton from '@/components/NavButton';
 
 type Plan = '1m' | '3m' | '6m';
 
-// 정기권 정보 타입
-interface TicketInfo {
-  name: string;
-  price: string;
-  monthlyPrice?: string;
-  originalPrice?: string;
-  discount?: string;
-}
-
 const baseCard = 'h-23 rounded-2xl px-5 py-4 transition flex items-center justify-between cursor-pointer select-none';
 const selectedCard = 'ring-2 ring-[#4B84FF] bg-white';
 const unselectedCard = 'border border-[#F0F0F0]';
@@ -90,18 +81,6 @@ export default function SeasonTicketPage() {
     }
   };
 
-  // 결제 금액 계산
-  const getPaymentAmount = (planType: Plan): number => {
-    switch (planType) {
-      case '1m':
-        return 15000;
-      case '3m':
-        return 40000;
-      case '6m':
-        return 75000;
-    }
-  };
-
   // 정기권 구매 처리
   const handlePurchase = async () => {
     try {
@@ -123,34 +102,6 @@ export default function SeasonTicketPage() {
       setError(err instanceof Error ? err.message : '정기권 구매에 실패했습니다.');
     } finally {
       setPurchasing(false);
-    }
-  };
-
-  // 정기권 정보 매핑
-  const getTicketInfo = (planType: Plan): TicketInfo => {
-    switch (planType) {
-      case '1m':
-        return {
-          name: '1개월권',
-          price: '₩15,000',
-          monthlyPrice: '/월',
-        };
-      case '3m':
-        return {
-          name: '3개월권',
-          price: '₩40,000',
-          monthlyPrice: '₩13,333/월',
-          originalPrice: '₩45,000',
-          discount: '11% 할인',
-        };
-      case '6m':
-        return {
-          name: '6개월권',
-          price: '₩75,000',
-          monthlyPrice: '₩12,500/월',
-          originalPrice: '₩100,000',
-          discount: '25% 할인',
-        };
     }
   };
 
