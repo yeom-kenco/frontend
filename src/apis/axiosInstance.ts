@@ -32,17 +32,7 @@ axiosInstance.interceptors.response.use(
     return response;
   },
   (error) => {
-    if (error.response?.status === 401) {
-      // 토큰이 만료되거나 유효하지 않은 경우
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
-
-      // 로그인 페이지로 리다이렉트 (필요시)
-      if (typeof window !== 'undefined') {
-        window.location.href = '/auth/login';
-      }
-    }
-
+    // Mock 모드: 401 리다이렉트 비활성화
     return Promise.reject(error);
   },
 );
