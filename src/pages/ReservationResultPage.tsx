@@ -23,10 +23,7 @@ export default function ReservationResultPage() {
 
   useEffect(() => {
     // 결제 완료 페이지이므로 뒤로가기 방지를 위해 히스토리 교체
-    // 토스페이먼츠에서 리다이렉트될 때는 외부 리다이렉트이므로 여기서 처리
-    if (window.history.length > 1) {
-      navigate(window.location.pathname + window.location.search, { replace: true });
-    }
+    window.history.replaceState(null, '', window.location.href);
 
     async function fetchReservation() {
       try {
