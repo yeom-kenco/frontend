@@ -116,17 +116,7 @@ export const MOCK_RESERVATIONS: ReservationResponse[] = [
 ];
 
 // ── Mock Passes ──
-export const MOCK_PASSES: PassResponse[] = [
-  {
-    id: 1,
-    passType: 'ONE_MONTH',
-    startDate: format(subDays(today, 15), 'yyyy-MM-dd'),
-    endDate: format(addDays(today, 15), 'yyyy-MM-dd'),
-    price: 15000,
-    status: 'ACTIVE',
-    valid: true,
-  },
-];
+export const MOCK_PASSES: PassResponse[] = [];
 
 // ── Mock Payments ──
 export const MOCK_PAYMENTS: PaymentResponse[] = [
