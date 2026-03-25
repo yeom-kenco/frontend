@@ -14,8 +14,7 @@ const INTERVAL_PRESETS = [3, 7, 14, 30];
 
 export default function NotificationSettingsPage() {
   const navigate = useNavigate();
-  const { enabled, intervalDays, lastBoardingDate, setEnabled, setIntervalDays, setLastBoardingDate } =
-    useNotificationStore();
+  const { enabled, intervalDays, setEnabled, setIntervalDays, setLastBoardingDate } = useNotificationStore();
 
   const [showBottomSheet, setShowBottomSheet] = useState(false);
   const [tempInterval, setTempInterval] = useState<number | null>(intervalDays);
