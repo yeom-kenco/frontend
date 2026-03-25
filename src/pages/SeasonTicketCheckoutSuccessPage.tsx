@@ -80,7 +80,7 @@ export default function SeasonTicketCheckoutSuccessPage() {
   }, []);
 
   const goReminderSetting = () => {
-    navigate('/'); // 임시
+    navigate('/notification-settings');
   };
 
   return (

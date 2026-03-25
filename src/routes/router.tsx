@@ -7,6 +7,7 @@ import HomePage from '@/pages/HomePage';
 import KakaoCallbackPage from '@/pages/KakaoCallbackPage';
 import LoginPage from '@/pages/LoginPage';
 import NotFoundPage from '@/pages/NotFoundPage';
+import NotificationSettingsPage from '@/pages/NotificationSettingsPage';
 import PaymentFailPage from '@/pages/PaymentFailPage';
 import PaymentSuccessPage from '@/pages/PaymentSuccessPage';
 import ReservationResultPage from '@/pages/ReservationResultPage';
@@ -86,6 +87,14 @@ export const router = createBrowserRouter(
           element: (
             <AuthGuard>
               <SeasonTicketCheckoutSuccessPage />
+            </AuthGuard>
+          ),
+        },
+        {
+          path: '/notification-settings',
+          element: (
+            <AuthGuard>
+              <NotificationSettingsPage />
             </AuthGuard>
           ),
         },
